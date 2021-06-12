@@ -8,6 +8,14 @@
 
                 <div class="mb-4">
 
+                    @if (session()->has('supprimerSuccess'))
+                    <div class="alert alert-success">
+                        <p>
+                           <h3>{{ session()->get('supprimerSuccess') }}</h3>
+                        </p>
+                    </div>
+                @endif
+
                     <table class="table table-bordered table-hover">
 
                         <thead>
@@ -25,22 +33,32 @@
                                     <th scope="row">{{ $loop->index + 1  }}</th>
                                     <td>{{ $etudiant->nom }}</td>
                                     <td>{{ $etudiant->prenom }}</td>
-                                    <td>{{ $etudiant->classe_id }}</td>
+                                    <td>{{ $etudiant->classe->libelle}}</td>
                                     <td>
                                         <a href="#" class="btn btn-info">Modifier</a>
-                                        <a href="#" class="btn btn-danger">Supprimer</a>
+                                        <a href="#" class="btn btn-danger" onclick="if(confirm('Voulez-vous vraiment supprimer cet étudiant'))
+                                        {document.getElementById('form-{{ $etudiant->id }}').submit()}">Supprimer</a>
+
+                                            <form id="form-{{ $etudiant->id }}" action="{{ route('list_etudiant.supprimer',['etudiant'=>$etudiant->id])}}" method="Post">
+                                                @csrf
+                                                <input type="hidden" name="_method" value="delete">
+
+                                            </form>
                                     </td>
                                 </tr>
                             @endforeach
 
                         </tbody>
-                         {{ $etudiants->links() }}
+
                     </table>
 
                 </div>
+                <div class="d-flex justify-content-end mb-4">
+                    {{ $etudiants->links() }}
+                </div>
 
                 <div class="d-flex mt-4">
-                    <a href="#" class="btn btn-primary">Ajouter un Etudiant</a>
+                    <a href="{{ route('list_etudiant.create') }}" class="btn btn-primary">Ajouter un Etudiant</a>
                 </div>
 
 
